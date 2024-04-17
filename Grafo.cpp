@@ -1,65 +1,112 @@
 #include "Grafo.h"
+#include <exception>
+#include <stdexcept>
+#include <algorithm>
+#include <string>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
 Grafo::Grafo(int num_vertices) {
-
     if (num_vertices <= 0) {
-        throw(invalid_argument("Erro no construtor Grafo(int num_vertices): o numero de vertices " +
-            to_string(num_vertices) + " eh invalido!"));
+        throw(invalid_argument("Erro no construtor Grafo(int): o numero de "
+            "vertices " + to_string(num_vertices) + " eh invalido!"));
     }
-
-    listas_adj_.resize(num_vertices);
 
     num_vertices_ = num_vertices;
     num_arestas_ = 0;
-    
+
+    matriz_adj_.resize(num_vertices);
+    for (int i = 0; i < num_vertices; i++) { // ou i < matriz_adj_.size()
+        matriz_adj_[i].resize(num_vertices, 0);
+    }
 }
 
 int Grafo::num_vertices() {
     return num_vertices_;
 }
 
-int Grafo::num_arestas(){
+int Grafo::num_arestas() {
     return num_arestas_;
 }
 
-bool Grafo::tem_aresta(Aresta e) {
-    if(e.v1 < num_vertices_ && e.v2 < num_vertices_) {
-        if(listas_adj_ [e.v1][e.v2])
-            return true;
-        return false;
-    }
-}
-
 void Grafo::insere_aresta(Aresta e) {
-    if(!tem_aresta(e)) {
-        listas_adj_ [e.v1][e.v2] = 1;
-        listas_adj_ [e.v2][e.v1] = 1;
+    try {
+        valida_aresta(e);
+    } catch (...) {
+        throw_with_nested(runtime_error("Erro na operacao "
+            "insere_aresta(Aresta): a aresta " + e.to_string() + " eh "
+            "invalida!"));
+    }
 
-        num_arestas_ ++;
+    if ((matriz_adj_[e.v1][e.v2] == 0) && (e.v1 != e.v2)) {
+        matriz_adj_[e.v1][e.v2] = 1;
+        matriz_adj_[e.v2][e.v1] = 1;
+
+        num_arestas_++;
     }
 }
 
 void Grafo::remove_aresta(Aresta e) {
-    if(tem_aresta(e)) {
-        listas_adj_ [e.v1][e.v2] = 0;
-        listas_adj_ [e.v2][e.v1] = 0;
+    try {
+        valida_aresta(e);
+    } catch (...) {
+        throw_with_nested(runtime_error("Erro na operacao "
+            "remove_aresta(Aresta): a aresta " + e.to_string() + " eh "
+            "invalida!"));
+    }
 
-        num_arestas_ --;
+    if (matriz_adj_[e.v1][e.v2] != 0) {
+        matriz_adj_[e.v1][e.v2] = 0;
+        matriz_adj_[e.v2][e.v1] = 0;
+
+        num_arestas_--;
     }
 }
 
 void Grafo::imprime() {
-    for (int i = 0; i < num_vertices_; i++) {
-        cout << i << ":";
-        for (int j = 0; j < num_vertices_; j++) {
-            if(listas_adj_ [i][j] != 0) {
-                cout << " " << j;
+    for (int v = 0; v < num_vertices_; v++) { // ou v < matriz_adj_.size()
+        cout << v << ":";
+        for (int u = 0; u < num_vertices_; u++) { // ou u < matriz_adj_.size()
+            if (matriz_adj_[v][u] != 0) {
+                cout << " " << u;
             }
         }
         cout << "\n";
     }
-    cout << "\n";
+}
+
+void Grafo::valida_vertice(int v) {
+    if ((v < 0) || (v >= num_vertices_)) {
+        throw out_of_range("Indice de vertice invalido: " + to_string(v));
+    }
+}
+
+void Grafo::valida_aresta(Aresta e) {
+    valida_vertice(e.v1);
+    valida_vertice(e.v2);
+}
+
+void Grafo::busca_prof(int v, int marcado[]){
+    marcado[v] = 1;
+    for (int u = 0; u < num_vertices_; u++)
+        if (matriz_adj_[v][u] != 0)
+            if (marcado[u] == 0)
+                busca_prof(u, marcado);
+}
+
+void Grafo::eh_conexo() {
+    int marcado[num_vertices_];
+    for (int v = 0; v < num_vertices_; v++) {
+        marcado[v] = 0;
+    }
+    busca_prof(0, marcado);
+    for (int v = 0; v < num_vertices_; v++) {
+        if (marcado[v] == 0) {
+            cout << "O grafo nao eh conexo" << endl;
+            return;
+        }
+    }
+     cout << "O grafo eh conexo" << endl;
 }
