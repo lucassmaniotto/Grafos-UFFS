@@ -118,3 +118,14 @@ bool Grafo::caminho_restrito(int v, int w, int z, int marcado[]) {
     }
     return false;
 }
+
+bool Grafo::eh_clique(vector<int> vertices) {
+    for (int i = 0; i < vertices.size(); i++) {
+        for (int j = i + 1; j < vertices.size(); j++) {
+            if (find(lista_adj_[vertices[i]].begin(), lista_adj_[vertices[i]].end(), vertices[j]) == lista_adj_[vertices[i]].end()) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
