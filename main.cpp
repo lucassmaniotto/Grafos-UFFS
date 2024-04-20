@@ -23,15 +23,6 @@ int main() {
         g.insere_aresta(Aresta(1,2));
         g.insere_aresta(Aresta(3,4));
 
-        g.eh_conexo();
-
-        Grafo g2(4);
-
-        g2.insere_aresta(Aresta(0,1));
-        g2.insere_aresta(Aresta(1,2));
-        g2.insere_aresta(Aresta(2,3));
-
-        g2.eh_conexo();
     }
     catch (const exception &e) {
         print_exception(e);

@@ -17,11 +17,9 @@ Grafo::Grafo(int num_vertices) {
     num_vertices_ = num_vertices;
     num_arestas_ = 0;
 
-    matriz_adj_.resize(num_vertices);
-    for (int i = 0; i < num_vertices; i++) { // ou i < matriz_adj_.size()
-        matriz_adj_[i].resize(num_vertices, 0);
-    }
+    lista_adj_.resize(num_vertices);
 }
+
 
 int Grafo::num_vertices() {
     return num_vertices_;
@@ -40,9 +38,9 @@ void Grafo::insere_aresta(Aresta e) {
             "invalida!"));
     }
 
-    if ((matriz_adj_[e.v1][e.v2] == 0) && (e.v1 != e.v2)) {
-        matriz_adj_[e.v1][e.v2] = 1;
-        matriz_adj_[e.v2][e.v1] = 1;
+    if ((find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) == lista_adj_[e.v1].end()) && (e.v1 != e.v2)) {
+        lista_adj_[e.v1].push_back(e.v2);
+        lista_adj_[e.v2].push_back(e.v1);
 
         num_arestas_++;
     }
@@ -57,23 +55,31 @@ void Grafo::remove_aresta(Aresta e) {
             "invalida!"));
     }
 
-    if (matriz_adj_[e.v1][e.v2] != 0) {
-        matriz_adj_[e.v1][e.v2] = 0;
-        matriz_adj_[e.v2][e.v1] = 0;
+    auto it1 = find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2);
+    auto it2 = find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1);
+
+    if (it1 != lista_adj_[e.v1].end() && it2 != lista_adj_[e.v2].end()) {
+        lista_adj_[e.v1].erase(it1);
+        lista_adj_[e.v2].erase(it2);
 
         num_arestas_--;
     }
 }
 
 void Grafo::imprime() {
-    for (int v = 0; v < num_vertices_; v++) { // ou v < matriz_adj_.size()
+    for (int v = 0; v < num_vertices_; v++) {
         cout << v << ":";
-        for (int u = 0; u < num_vertices_; u++) { // ou u < matriz_adj_.size()
-            if (matriz_adj_[v][u] != 0) {
-                cout << " " << u;
-            }
+        for (int u : lista_adj_[v]) {
+            cout << " " << u;
         }
         cout << "\n";
+    }
+}
+
+void Grafo::imprime_graus() {
+    for (int v = 0; v < num_vertices_; v++) {
+        int grau = lista_adj_[v].size();
+        cout << v << ": " << grau << endl;
     }
 }
 
@@ -86,27 +92,4 @@ void Grafo::valida_vertice(int v) {
 void Grafo::valida_aresta(Aresta e) {
     valida_vertice(e.v1);
     valida_vertice(e.v2);
-}
-
-void Grafo::busca_prof(int v, int marcado[]){
-    marcado[v] = 1;
-    for (int u = 0; u < num_vertices_; u++)
-        if (matriz_adj_[v][u] != 0)
-            if (marcado[u] == 0)
-                busca_prof(u, marcado);
-}
-
-void Grafo::eh_conexo() {
-    int marcado[num_vertices_];
-    for (int v = 0; v < num_vertices_; v++) {
-        marcado[v] = 0;
-    }
-    busca_prof(0, marcado);
-    for (int v = 0; v < num_vertices_; v++) {
-        if (marcado[v] == 0) {
-            cout << "O grafo nao eh conexo" << endl;
-            return;
-        }
-    }
-     cout << "O grafo eh conexo" << endl;
 }

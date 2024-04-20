@@ -4,32 +4,23 @@
 
 #include "Aresta.h"
 #include <vector>
+#include <list>
 
 class Grafo {
 public:
-    /** Constroi um grafo simples que possui o numero de vertices recebido por
-     *  parametro e que nao possui arestas */
     Grafo(int num_vertices);
 
     int num_vertices();
     int num_arestas();
 
-    /** Insere uma aresta no grafo caso a aresta ainda nao exista no grafo e
-     * nao seja um laco */
     void insere_aresta(Aresta e);
-
-    /** Remove uma aresta do grafo caso a aresta exista no grafo */
     void remove_aresta(Aresta e);
-
     void imprime();
-
-    void busca_prof(int v, int marcado[]);
-
-    void eh_conexo();
+    void imprime_graus();
 private:
     int num_vertices_;
     int num_arestas_;
-    std::vector<std::vector<int>> matriz_adj_;
+    std::vector<std::list<int>> lista_adj_;
 
     void valida_vertice(int v);
     void valida_aresta(Aresta e);
