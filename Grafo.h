@@ -17,6 +17,7 @@ public:
     void remove_aresta(Aresta e);
     void imprime();
     void imprime_graus();
+    bool caminho_restrito(int v, int w, int z, int marcado[]);
 private:
     int num_vertices_;
     int num_arestas_;

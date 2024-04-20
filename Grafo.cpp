@@ -38,12 +38,17 @@ void Grafo::insere_aresta(Aresta e) {
             "invalida!"));
     }
 
-    if ((find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) == lista_adj_[e.v1].end()) && (e.v1 != e.v2)) {
-        lista_adj_[e.v1].push_back(e.v2);
-        lista_adj_[e.v2].push_back(e.v1);
-
-        num_arestas_++;
+    if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end() ||
+        find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1) != lista_adj_[e.v2].end() &&
+        e.v1 != e.v2) 
+    {
+        return;
     }
+    
+    lista_adj_[e.v1].push_back(e.v2);
+    lista_adj_[e.v2].push_back(e.v1);
+
+    num_arestas_++;
 }
 
 void Grafo::remove_aresta(Aresta e) {
@@ -55,31 +60,25 @@ void Grafo::remove_aresta(Aresta e) {
             "invalida!"));
     }
 
-    auto it1 = find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2);
-    auto it2 = find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1);
-
-    if (it1 != lista_adj_[e.v1].end() && it2 != lista_adj_[e.v2].end()) {
-        lista_adj_[e.v1].erase(it1);
-        lista_adj_[e.v2].erase(it2);
-
-        num_arestas_--;
+    if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end() ||
+        find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1) != lista_adj_[e.v2].end())
+    {
+        return;
     }
+
+    lista_adj_[e.v1].remove(e.v2);
+    lista_adj_[e.v2].remove(e.v1);
+
+    num_arestas_--;  
 }
 
 void Grafo::imprime() {
     for (int v = 0; v < num_vertices_; v++) {
         cout << v << ":";
-        for (int u : lista_adj_[v]) {
-            cout << " " << u;
+        for (int i : lista_adj_[v]) {
+            cout << " " << i;
         }
         cout << "\n";
-    }
-}
-
-void Grafo::imprime_graus() {
-    for (int v = 0; v < num_vertices_; v++) {
-        int grau = lista_adj_[v].size();
-        cout << v << ": " << grau << endl;
     }
 }
 
@@ -92,4 +91,30 @@ void Grafo::valida_vertice(int v) {
 void Grafo::valida_aresta(Aresta e) {
     valida_vertice(e.v1);
     valida_vertice(e.v2);
+}
+
+void Grafo::imprime_graus(){
+    for(int i = 0; i < num_vertices_; i++){
+        cout << i <<": " << lista_adj_[i].size() << endl;
+    }
+}
+
+bool Grafo::caminho_restrito(int v, int w, int z, int marcado[]) {
+    if (v == z) {
+        return false;
+    }
+    if (v == w) {
+        printf("%d-", v);
+        return true;
+    }
+    marcado[v] = 1;
+    for (int u : lista_adj_[v]) {
+        if (marcado[u] == 0 && u != z) {
+            if (caminho_restrito(u, w, z, marcado)) {
+                printf("%d-", v);
+                return true;
+            }
+        }
+    }
+    return false;
 }
