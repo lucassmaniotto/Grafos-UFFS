@@ -63,13 +63,11 @@ void Grafo::remove_aresta(Aresta e) {
     if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end() ||
         find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1) != lista_adj_[e.v2].end())
     {
-        return;
+        lista_adj_[e.v1].remove(e.v2);
+        lista_adj_[e.v2].remove(e.v1);
+
+        num_arestas_--;  
     }
-
-    lista_adj_[e.v1].remove(e.v2);
-    lista_adj_[e.v2].remove(e.v1);
-
-    num_arestas_--;  
 }
 
 void Grafo::imprime() {
