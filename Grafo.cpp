@@ -39,8 +39,8 @@ void Grafo::insere_aresta(Aresta e) {
     }
 
     if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end() ||
-        find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1) != lista_adj_[e.v2].end() &&
-        e.v1 != e.v2) 
+        find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1) != lista_adj_[e.v2].end() ||
+        e.v1 == e.v2) 
     {
         return;
     }
@@ -97,22 +97,18 @@ void Grafo::imprime_graus(){
     }
 }
 
-bool Grafo::caminho_restrito(int v, int w, int z, int marcado[]) {
-    if (v == z) {
-        return false;
-    }
+bool Grafo::caminho_restrito(int v, int w, int x, int z, int marcado[]) {
     if (v == w) {
-        printf("%d-", v);
         return true;
     }
     marcado[v] = 1;
     for (int u : lista_adj_[v]) {
-        if (marcado[u] == 0 && u != z) {
-            if (caminho_restrito(u, w, z, marcado)) {
-                printf("%d-", v);
-                return true;
+        if ((v != x || u != z) && (v != z || u != x))
+            if (marcado[u] == 0) {
+                if (caminho_restrito(u, w, x, z, marcado)) {
+                    return true;
+                }
             }
-        }
     }
     return false;
 }

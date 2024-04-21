@@ -17,7 +17,7 @@ public:
     void remove_aresta(Aresta e);
     void imprime();
     void imprime_graus();
-    bool caminho_restrito(int v, int w, int z, int marcado[]);
+    bool caminho_restrito(int x, int y, int w, int z, int marcado[]);
     bool eh_clique(std::vector<int> vertices);
 private:
     int num_vertices_;
