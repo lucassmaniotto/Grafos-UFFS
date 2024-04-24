@@ -37,8 +37,8 @@ void entrada(Grafo& grafo, char operacao, vector<int>& param) {
             int y = param[1];
             int w = param[2];
             int z = param[3];
-            int marcado[grafo.num_vertices()] = {0};
-            bool caminho = grafo.caminho_restrito(x, y, w, z, marcado);
+            vector<int> marcado(grafo.num_vertices(), 0); // Inicializa com 0s
+            bool caminho = grafo.caminho_restrito(x, y, w, z, marcado.data()); // Passa o ponteiro para os dados
             cout << (caminho ? "SIM" : "NAO") << endl;
             break;
         }
