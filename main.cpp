@@ -7,6 +7,12 @@
 
 using namespace std;
 
+void Dijkstra(Grafo grafo, int s, vector<int> pai, vector<int> dp){
+
+}
+
+
+
 int main() {
     Grafo grafo(5);
 
@@ -30,5 +36,7 @@ int main() {
 
     grafo.imprime();
 
+    Grafo g = grafo.inverterArestas();
+    g.imprime();
     return 0;
 }

@@ -1,4 +1,5 @@
 #include "Grafo.h"
+#include "Destino.h"
 #include <exception>
 #include <stdexcept>
 #include <algorithm>
@@ -37,37 +38,27 @@ void Grafo::insere_aresta(Aresta e) {
             "invalida!"));
     }
 
-    if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end() ||
-        e.v1 == e.v2) 
-    {
+    if (find_if(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(),
+                     [&](const Destino &d) { return d.u == e.v2; }) != lista_adj_[e.v1].end() ||
+        e.v1 == e.v2) {
         return;
     }
-    lista_adj_[e.v1].push_back(e.v2);
+
+    Destino destino;
+
+    destino.u = e.v2;
+    destino.peso = e.peso;
+
+    lista_adj_[e.v1].push_back(destino);
 
     num_arestas_++;
-}
-
-void Grafo::remove_aresta(Aresta e) {
-    try {
-        valida_aresta(e);
-    } catch (...) {
-        throw_with_nested(runtime_error("Erro na operacao "
-            "remove_aresta(Aresta): a aresta " + e.to_string() + " eh "
-            "invalida!"));
-    }
-
-    if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end()) {
-        lista_adj_[e.v1].remove(e.v2);
-
-        num_arestas_--;
-    }
 }
 
 void Grafo::imprime() {
     for (int v = 0; v < num_vertices_; v++) {
         cout << v << ":";
-        for (int i : lista_adj_[v]) {
-            cout << " " << i;
+        for (const Destino &destino : lista_adj_[v]) {
+            cout << " " << destino.u;
         }
         cout << "\n";
     }
@@ -91,45 +82,12 @@ void Grafo::valida_aresta(Aresta e) {
     valida_peso(e.peso);
 }
 
-void Grafo::imprime_graus(){
-    for(int i = 0; i < num_vertices_; i++){
-        cout << i <<": " << lista_adj_[i].size() << endl;
-    }
-}
-
-bool Grafo::caminho_restrito(int v, int w, int x, int z, int marcado[]) {
-    if (v == w) {
-        return true;
-    }
-    marcado[v] = 1;
-    for (int u : lista_adj_[v]) {
-        if ((v != x || u != z) && (v != z || u != x))
-            if (marcado[u] == 0) {
-                if (caminho_restrito(u, w, x, z, marcado)) {
-                    return true;
-                }
-            }
-    }
-    return false;
-}
-
-bool Grafo::eh_clique(vector<int> vertices) {
-    for (int i = 0; i < vertices.size(); i++) {
-        for (int j = i + 1; j < vertices.size(); j++) {
-            if (find(lista_adj_[vertices[i]].begin(), lista_adj_[vertices[i]].end(), vertices[j]) == lista_adj_[vertices[i]].end()) {
-                return false;
-            }
-        }
-    }
-    return true;
-}
-
 Grafo Grafo::inverterArestas() {
     Grafo grafo_invertido(num_vertices_);
 
     for (int v = 0; v < num_vertices_; ++v) {
-        for (int u : lista_adj_[v]) {
-            grafo_invertido.insere_aresta(Aresta(u, v, 1));
+        for (const Destino &destino : lista_adj_[v]) {
+            grafo_invertido.insere_aresta(Aresta(destino.u, v, destino.peso));
         }
     }
 
