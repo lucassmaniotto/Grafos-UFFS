@@ -6,11 +6,11 @@
 
 class Aresta {
 public:
-    const int u;
-    const int v;
+    const int v1;
+    const int v2;
     const int peso;
 
-    Aresta(int u, int v, int peso);
+    Aresta(int v1, int v2, int peso);
 
     std::string to_string();
 };

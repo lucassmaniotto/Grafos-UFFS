@@ -28,11 +28,7 @@ int main() {
     grafo.insere_aresta(e4);
     grafo.insere_aresta(e5);
 
-    //grafo.imprime();
-
-    //Grafo g = grafo.inverterArestas();
-
-    //g.imprime();
+    grafo.imprime();
 
     return 0;
 }
