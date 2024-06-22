@@ -19,12 +19,14 @@ public:
     void imprime_graus();
     bool caminho_restrito(int x, int y, int w, int z, int marcado[]);
     bool eh_clique(std::vector<int> vertices);
+    Grafo inverterArestas();
 private:
     int num_vertices_;
     int num_arestas_;
     std::vector<std::list<int>> lista_adj_;
 
     void valida_vertice(int v);
+    void valida_peso(int v);
     void valida_aresta(Aresta e);
 };
 

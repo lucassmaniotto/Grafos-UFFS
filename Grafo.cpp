@@ -20,7 +20,6 @@ Grafo::Grafo(int num_vertices) {
     lista_adj_.resize(num_vertices);
 }
 
-
 int Grafo::num_vertices() {
     return num_vertices_;
 }
@@ -39,14 +38,11 @@ void Grafo::insere_aresta(Aresta e) {
     }
 
     if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end() ||
-        find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1) != lista_adj_[e.v2].end() ||
         e.v1 == e.v2) 
     {
         return;
     }
-    
     lista_adj_[e.v1].push_back(e.v2);
-    lista_adj_[e.v2].push_back(e.v1);
 
     num_arestas_++;
 }
@@ -60,13 +56,10 @@ void Grafo::remove_aresta(Aresta e) {
             "invalida!"));
     }
 
-    if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end() ||
-        find(lista_adj_[e.v2].begin(), lista_adj_[e.v2].end(), e.v1) != lista_adj_[e.v2].end())
-    {
+    if (find(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(), e.v2) != lista_adj_[e.v1].end()) {
         lista_adj_[e.v1].remove(e.v2);
-        lista_adj_[e.v2].remove(e.v1);
 
-        num_arestas_--;  
+        num_arestas_--;
     }
 }
 
@@ -86,9 +79,16 @@ void Grafo::valida_vertice(int v) {
     }
 }
 
+void Grafo::valida_peso(int peso) {
+    if (peso < 0) {
+        throw out_of_range("Peso invalido: " + to_string(peso));
+    }
+}
+
 void Grafo::valida_aresta(Aresta e) {
     valida_vertice(e.v1);
     valida_vertice(e.v2);
+    valida_peso(e.peso);
 }
 
 void Grafo::imprime_graus(){
@@ -122,4 +122,16 @@ bool Grafo::eh_clique(vector<int> vertices) {
         }
     }
     return true;
+}
+
+Grafo Grafo::inverterArestas() {
+    Grafo grafo_invertido(num_vertices_);
+
+    for (int v = 0; v < num_vertices_; ++v) {
+        for (int u : lista_adj_[v]) {
+            grafo_invertido.insere_aresta(Aresta(u, v, 1));
+        }
+    }
+
+    return grafo_invertido;
 }
