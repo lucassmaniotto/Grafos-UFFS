@@ -2,7 +2,7 @@
 #define DESTINO_H
 
 struct Destino {
-    int u;
+    int v;
     int peso;
 };
 

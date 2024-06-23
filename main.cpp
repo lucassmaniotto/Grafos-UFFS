@@ -4,29 +4,23 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <limits.h>
+
 
 using namespace std;
 
-void Dijkstra(Grafo grafo, int s, vector<int> pai, vector<int> dp){
-
-}
-
-
-
 int main() {
-    Grafo grafo(5);
+    Grafo grafo(4);
 
-    Filapri_min<int> teste(5);
-
-    teste.insere(0, 4);
+    // teste.insere(0, 4);
 
     //insere, remove, vazia e dimini_prio
 
-    Aresta e1(0, 1, 5);
-    Aresta e2(0, 2, 6);
-    Aresta e3(0, 3, 7);
-    Aresta e4(1, 0, 5);
-    Aresta e5(2, 0, 5);
+    Aresta e1(0, 3, 4);
+    Aresta e2(1, 0, 6);
+    Aresta e3(1, 3, 2);
+    Aresta e4(2, 0, 2);
+    Aresta e5(3, 2, 3);
 
     grafo.insere_aresta(e1);
     grafo.insere_aresta(e2);
@@ -36,7 +30,26 @@ int main() {
 
     grafo.imprime();
 
+    vector<int> dp, pai;
+
     Grafo g = grafo.inverterArestas();
-    g.imprime();
+
+    g.Dijkstra(0, pai, dp);
+
+    cout << "Vetor pai:" << endl;
+    for (int i = 0; i < pai.size(); ++i) {
+        cout << pai[i] << " ";
+    }
+    cout << endl;
+
+    cout << "Vetor dp:" << endl;
+    for (int i = 0; i < dp.size(); ++i) {
+        cout << dp[i] << " ";
+    }
+    cout << endl;
+
+
+    cout << endl;
+
     return 0;
 }

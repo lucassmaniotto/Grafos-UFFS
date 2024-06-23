@@ -1,11 +1,13 @@
 #include "Grafo.h"
 #include "Destino.h"
+#include "Filapri_min.h"
 #include <exception>
 #include <stdexcept>
 #include <algorithm>
 #include <string>
 #include <iostream>
 #include <vector>
+#include <limits.h>
 
 using namespace std;
 
@@ -39,14 +41,14 @@ void Grafo::insere_aresta(Aresta e) {
     }
 
     if (find_if(lista_adj_[e.v1].begin(), lista_adj_[e.v1].end(),
-                     [&](const Destino &d) { return d.u == e.v2; }) != lista_adj_[e.v1].end() ||
+                     [&](const Destino &d) { return d.v == e.v2; }) != lista_adj_[e.v1].end() ||
         e.v1 == e.v2) {
         return;
     }
 
     Destino destino;
 
-    destino.u = e.v2;
+    destino.v = e.v2;
     destino.peso = e.peso;
 
     lista_adj_[e.v1].push_back(destino);
@@ -58,7 +60,7 @@ void Grafo::imprime() {
     for (int v = 0; v < num_vertices_; v++) {
         cout << v << ":";
         for (const Destino &destino : lista_adj_[v]) {
-            cout << " " << destino.u;
+            cout << " " << destino.v;
         }
         cout << "\n";
     }
@@ -87,9 +89,32 @@ Grafo Grafo::inverterArestas() {
 
     for (int v = 0; v < num_vertices_; ++v) {
         for (const Destino &destino : lista_adj_[v]) {
-            grafo_invertido.insere_aresta(Aresta(destino.u, v, destino.peso));
+            grafo_invertido.insere_aresta(Aresta(destino.v, v, destino.peso));
         }
     }
 
     return grafo_invertido;
+}
+
+void Grafo::Dijkstra(int s, vector<int> &pai, vector<int> &dp){
+    pai.resize(num_vertices_, -1);
+    dp.resize(num_vertices_, INT_MAX);
+    dp[s] = 0;
+    Filapri_min<int> fila_prim(num_vertices_);
+    for (int i = 0 ; i < num_vertices_; i++){
+        fila_prim.insere(i, dp[i]);
+    }
+    while (!fila_prim.vazia())
+    {
+        pair<int,int> u = fila_prim.remove();
+        if (dp[u.first] != INT_MAX){
+            for (const Destino& vizinho : lista_adj_[u.first]){
+                if (dp[vizinho.v] > dp[u.first] + vizinho.peso){
+                    dp[vizinho.v] = dp[u.first] + vizinho.peso;
+                    pai[vizinho.v] = u.first;
+                    fila_prim.diminui_prio(vizinho.v, dp[vizinho.v]);
+                }
+            }
+        }
+    }
 }

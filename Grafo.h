@@ -16,6 +16,7 @@ public:
     void insere_aresta(Aresta e);
     void imprime();
     Grafo inverterArestas();
+    void Dijkstra(int s, std::vector<int> &pai, std::vector<int> &dp);
 private:
     int num_vertices_;
     int num_arestas_;
