@@ -6,50 +6,37 @@
 #include <sstream>
 #include <limits.h>
 
-
 using namespace std;
 
 int main() {
-    Grafo grafo(4);
+    int v, a;
+    cin >> v >> a;
+    Grafo grafo(v);
 
-    // teste.insere(0, 4);
+    cin.ignore();
 
-    //insere, remove, vazia e dimini_prio
+    for (int i = 0; i < a; i++) {
+        string linha;
+        getline(cin, linha);
+        stringstream ss(linha);
 
-    Aresta e1(0, 3, 4);
-    Aresta e2(1, 0, 6);
-    Aresta e3(1, 3, 2);
-    Aresta e4(2, 0, 2);
-    Aresta e5(3, 2, 3);
+        int v1, v2, peso;
+        ss >> v1 >> v2 >> peso;
 
-    grafo.insere_aresta(e1);
-    grafo.insere_aresta(e2);
-    grafo.insere_aresta(e3);
-    grafo.insere_aresta(e4);
-    grafo.insere_aresta(e5);
-
-    grafo.imprime();
-
-    vector<int> dp, pai;
-
-    Grafo g = grafo.inverterArestas();
-
-    g.Dijkstra(0, pai, dp);
-
-    cout << "Vetor pai:" << endl;
-    for (int i = 0; i < pai.size(); ++i) {
-        cout << pai[i] << " ";
+        Aresta aresta(v1, v2, peso);
+        grafo.insere_aresta(aresta);
     }
-    cout << endl;
+    
+    Grafo grafoInverido = grafo.inverterArestas();
 
-    cout << "Vetor dp:" << endl;
-    for (int i = 0; i < dp.size(); ++i) {
-        cout << dp[i] << " ";
+    int vezes, X, M;
+
+    cin >> vezes;
+
+    for (int i = 0; i < vezes; i++) {
+        cin >> X >> M;
+        grafoInverido.encontraCaminhoViavel(X, M);
     }
-    cout << endl;
-
-
-    cout << endl;
 
     return 0;
 }

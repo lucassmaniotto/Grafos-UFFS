@@ -56,16 +56,6 @@ void Grafo::insere_aresta(Aresta e) {
     num_arestas_++;
 }
 
-void Grafo::imprime() {
-    for (int v = 0; v < num_vertices_; v++) {
-        cout << v << ":";
-        for (const Destino &destino : lista_adj_[v]) {
-            cout << " " << destino.v;
-        }
-        cout << "\n";
-    }
-}
-
 void Grafo::valida_vertice(int v) {
     if ((v < 0) || (v >= num_vertices_)) {
         throw out_of_range("Indice de vertice invalido: " + to_string(v));
@@ -96,16 +86,15 @@ Grafo Grafo::inverterArestas() {
     return grafo_invertido;
 }
 
-void Grafo::Dijkstra(int s, vector<int> &pai, vector<int> &dp){
+void Grafo::Dijkstra(int s, vector<int> &pai, vector<int> &dp) {
     pai.resize(num_vertices_, -1);
     dp.resize(num_vertices_, INT_MAX);
     dp[s] = 0;
     Filapri_min<int> fila_prim(num_vertices_);
-    for (int i = 0 ; i < num_vertices_; i++){
+    for (int i = 0 ; i < num_vertices_; i++) {
         fila_prim.insere(i, dp[i]);
     }
-    while (!fila_prim.vazia())
-    {
+    while (!fila_prim.vazia()) {
         pair<int,int> u = fila_prim.remove();
         if (dp[u.first] != INT_MAX){
             for (const Destino& vizinho : lista_adj_[u.first]){
@@ -114,6 +103,26 @@ void Grafo::Dijkstra(int s, vector<int> &pai, vector<int> &dp){
                     pai[vizinho.v] = u.first;
                     fila_prim.diminui_prio(vizinho.v, dp[vizinho.v]);
                 }
+            }
+        }
+    }
+}
+
+void Grafo::encontraCaminhoViavel(int X, int M) {
+    vector<int> dp, pai;
+    Dijkstra(X, pai, dp);
+    for (int i = 0; i < num_vertices_; i++) {
+        if (i != X) {
+            if (dp[i] <= M) {
+                cout << i << ": " << dp[i] << ", ";
+                int j = i;
+                while (pai[j] != -1) {
+                    cout << j << " ";
+                    j = pai[j];
+                }
+                cout << j << endl;
+            } else {
+                cout << i << ": economicamente inviavel ate " << X << endl;
             }
         }
     }
