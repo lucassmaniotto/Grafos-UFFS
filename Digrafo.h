@@ -6,15 +6,15 @@
 #include <vector>
 #include <list>
 
-class Grafo {
+class Digrafo {
 public:
-    Grafo(int num_vertices);
+    Digrafo(int num_vertices);
 
     int num_vertices();
     int num_arestas();
 
     void insere_aresta(Aresta e);
-    Grafo inverterArestas();
+    Digrafo inverterArestas();
     void Dijkstra(int s, std::vector<int> &pai, std::vector<int> &dp);
     void encontraCaminhoViavel(int X, int M);
 private:

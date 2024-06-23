@@ -1,5 +1,5 @@
 #include "Aresta.h"
-#include "Grafo.h"
+#include "Digrafo.h"
 #include "Filapri_min.h"
 #include <iostream>
 #include <vector>
@@ -11,7 +11,7 @@ using namespace std;
 int main() {
     int v, a;
     cin >> v >> a;
-    Grafo grafo(v);
+    Digrafo digrafo(v);
 
     cin.ignore();
 
@@ -24,10 +24,10 @@ int main() {
         ss >> v1 >> v2 >> peso;
 
         Aresta aresta(v1, v2, peso);
-        grafo.insere_aresta(aresta);
+        digrafo.insere_aresta(aresta);
     }
     
-    Grafo grafoInverido = grafo.inverterArestas();
+    Digrafo digrafoInvertido = digrafo.inverterArestas();
 
     int vezes, X, M;
 
@@ -35,7 +35,7 @@ int main() {
 
     for (int i = 0; i < vezes; i++) {
         cin >> X >> M;
-        grafoInverido.encontraCaminhoViavel(X, M);
+        digrafoInvertido.encontraCaminhoViavel(X, M);
     }
 
     return 0;

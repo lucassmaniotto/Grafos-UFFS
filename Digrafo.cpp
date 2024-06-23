@@ -1,4 +1,4 @@
-#include "Grafo.h"
+#include "Digrafo.h"
 #include "Destino.h"
 #include "Filapri_min.h"
 #include <exception>
@@ -11,7 +11,7 @@
 
 using namespace std;
 
-Grafo::Grafo(int num_vertices) {
+Digrafo::Digrafo(int num_vertices) {
     if (num_vertices <= 0) {
         throw(invalid_argument("Erro no construtor Grafo(int): o numero de "
             "vertices " + to_string(num_vertices) + " eh invalido!"));
@@ -23,15 +23,15 @@ Grafo::Grafo(int num_vertices) {
     lista_adj_.resize(num_vertices);
 }
 
-int Grafo::num_vertices() {
+int Digrafo::num_vertices() {
     return num_vertices_;
 }
 
-int Grafo::num_arestas() {
+int Digrafo::num_arestas() {
     return num_arestas_;
 }
 
-void Grafo::insere_aresta(Aresta e) {
+void Digrafo::insere_aresta(Aresta e) {
     try {
         valida_aresta(e);
     } catch (...) {
@@ -56,26 +56,26 @@ void Grafo::insere_aresta(Aresta e) {
     num_arestas_++;
 }
 
-void Grafo::valida_vertice(int v) {
+void Digrafo::valida_vertice(int v) {
     if ((v < 0) || (v >= num_vertices_)) {
         throw out_of_range("Indice de vertice invalido: " + to_string(v));
     }
 }
 
-void Grafo::valida_peso(int peso) {
+void Digrafo::valida_peso(int peso) {
     if (peso < 0) {
         throw out_of_range("Peso invalido: " + to_string(peso));
     }
 }
 
-void Grafo::valida_aresta(Aresta e) {
+void Digrafo::valida_aresta(Aresta e) {
     valida_vertice(e.v1);
     valida_vertice(e.v2);
     valida_peso(e.peso);
 }
 
-Grafo Grafo::inverterArestas() {
-    Grafo grafo_invertido(num_vertices_);
+Digrafo Digrafo::inverterArestas() {
+    Digrafo grafo_invertido(num_vertices_);
 
     for (int v = 0; v < num_vertices_; ++v) {
         for (const Destino &destino : lista_adj_[v]) {
@@ -86,7 +86,7 @@ Grafo Grafo::inverterArestas() {
     return grafo_invertido;
 }
 
-void Grafo::Dijkstra(int s, vector<int> &pai, vector<int> &dp) {
+void Digrafo::Dijkstra(int s, vector<int> &pai, vector<int> &dp) {
     pai.resize(num_vertices_, -1);
     dp.resize(num_vertices_, INT_MAX);
     dp[s] = 0;
@@ -108,7 +108,7 @@ void Grafo::Dijkstra(int s, vector<int> &pai, vector<int> &dp) {
     }
 }
 
-void Grafo::encontraCaminhoViavel(int X, int M) {
+void Digrafo::encontraCaminhoViavel(int X, int M) {
     vector<int> dp, pai;
     Dijkstra(X, pai, dp);
     for (int i = 0; i < num_vertices_; i++) {
